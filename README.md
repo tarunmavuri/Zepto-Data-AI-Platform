@@ -21,18 +21,6 @@ The scraping script is located at `data_pipeline/data_end-to-end.py`.
 - `beautifulsoup4`
 - `csv` (Python standard library)
 
-### How to run
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. Run the data pipeline:
-   ```bash
-   python data_pipeline/data_end-to-end.py
-   ```
-3. Output file:
-   - `books_dataset.csv`
+### Saved data
+''' Output file: - `books_dataset.csv` '''
 
-### Notes
-- The script uses UTF-8 encoding for output.
-- The categories are explicitly defined in the script for Task 1.
