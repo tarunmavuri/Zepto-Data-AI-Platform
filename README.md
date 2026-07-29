@@ -1,7 +1,5 @@
 ﻿# Module-1: MASAI Capstone Project
 
-## Task 1: Book Data Extraction
-
 This module scrapes book data from `https://books.toscrape.com` for the following categories:
 - Travel
 - Mystery
