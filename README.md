@@ -13,14 +13,18 @@ The scraping script is located at `data_pipeline/data_end-to-end.py`.
 - Sends HTTP requests to category pages
 - Parses HTML with BeautifulSoup
 - Extracts book title, price, star rating, availability, and category
+- Cleans fields into typed columns: `price_gbp`, `rating`, `in_stock`
+- Converts price into `price_inr`
 - Follows pagination until all pages in each category are collected
 - Saves the final dataset to `books_dataset.csv`
+- Persists cleaned records into a local SQLite database `books.db`
 
 ### Libraries and requirements
 - `requests`
 - `beautifulsoup4`
-- `csv` (Python standard library)
+- `csv`, `re`, `statistics`, `sqlite3` (Python standard library)
 
 ### Saved data
-''' Output file: - `books_dataset.csv` '''
+- `books_dataset.csv`
+- `books.db`
 
