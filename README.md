@@ -26,24 +26,28 @@ The scraping script is located at `data_pipeline/data_end-to-end.py`.
 
 ## Installation
 
-- Requires Python 3.10 or later.
-- Create and activate a virtual environment, then install dependencies:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\activate
-pip install -r requirements.txt
+```bash
+pip install requests beautifulsoup4 pandas
 ```
 
-## Usage
+## Run
 
-- Run the end-to-end scraping pipeline:
-
-```powershell
-.\.venv\Scripts\python data_pipeline\data_end-to-end.py
+```bash
+python books.py
 ```
 
 - The script saves output to `books_dataset.csv` and a local SQLite DB `books.db`.
+
+## Cleaning decisions
+
+- Missing prices replaced with median.
+- Missing ratings replaced with median.
+- Stock converted to Boolean.
+- Prices converted to INR.
+
+## Notes
+
+- Fixed conversion rate: `1 GBP = 105.50 INR`
 
 ## Notes
 
