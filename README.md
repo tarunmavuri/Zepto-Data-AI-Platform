@@ -1,11 +1,12 @@
-﻿# Module-1: MASAI Capstone Project
+﻿#  MASAI Capstone Project
+# Module-1 : Data Extraction, Data Cleaning, Storing results
 
 This module scrapes book data from `https://books.toscrape.com` for the following categories:
 - Travel
 - Mystery
 - Classics
 
-The scraping script is located at `data_pipeline/data_end-to-end.py`.
+The scraping module is located at `data_pipeline/data_end-to-end.py`.
 
 ### What the script does
 - Sends HTTP requests to category pages
@@ -14,9 +15,9 @@ The scraping script is located at `data_pipeline/data_end-to-end.py`.
 - Cleans fields into typed columns: `price_gbp`, `rating`, `in_stock`
 - Converts price into `price_inr`
 - Follows pagination until all pages in each category are collected
-- Saves the final dataset to `books_dataset.csv`
-- Persists cleaned records into a local SQLite database `books.db`
-- Writes query results to `query_results.json`
+- Saves the final dataset to `data_pipeline/books_dataset.csv`
+- Persists cleaned records into a local SQLite database `data_pipeline/books.db`
+- Writes query results to `data_pipeline/query_results.json`
 
 ### Libraries and requirements
 - `requests`
@@ -27,7 +28,7 @@ The scraping script is located at `data_pipeline/data_end-to-end.py`.
 ## Installation
 
 ```bash
-pip install requests beautifulsoup4 pandas
+pip install -r requirements.txt
 ```
 
 ## Run
@@ -36,7 +37,13 @@ pip install requests beautifulsoup4 pandas
 python books.py
 ```
 
-- The script saves output to `books_dataset.csv` and a local SQLite DB `books.db`.
+- The root wrapper runs `data_pipeline/data_end-to-end.py`.
+- Output files are created under `data_pipeline/`:
+  - `data_pipeline/books_dataset.csv`
+  - `data_pipeline/books.db`
+  - `data_pipeline/query_results.json`
+
+See `data_pipeline/README.md` for module details.
 
 ## Cleaning decisions
 

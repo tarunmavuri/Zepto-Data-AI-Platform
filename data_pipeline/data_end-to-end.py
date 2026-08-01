@@ -1,12 +1,20 @@
-import re, csv, json, sqlite3, statistics, requests
+import re
+import csv
+import json
+import sqlite3
+import statistics
+import requests
 from bs4 import BeautifulSoup
+from pathlib import Path
 from urllib.parse import urljoin
 import pandas as pd
 
-#TASK-1 : starting scraping
-BASE="https://books.toscrape.com/"
-RATE=105.50
-CATS={
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+# TASK-1 : starting scraping
+BASE = "https://books.toscrape.com/"
+RATE = 105.50
+CATS = {
     "Travel":"catalogue/category/books/travel_2/index.html",
     "Mystery":"catalogue/category/books/mystery_3/index.html",
     "Classics":"catalogue/category/books/classics_6/index.html"
@@ -49,20 +57,22 @@ rows=[{
 "category":r["category"]
 } for r in raw]
 
-with open("books_dataset.csv","w",newline="",encoding="utf-8") as f:
-    w=csv.DictWriter(f,fieldnames=rows[0].keys()); w.writeheader(); w.writerows(rows)
+with open(SCRIPT_DIR / "books_dataset.csv", "w", newline="", encoding="utf-8") as f:
+    w = csv.DictWriter(f, fieldnames=rows[0].keys())
+    w.writeheader()
+    w.writerows(rows)
 
 print("Total scraped rows:", len(raw))
-print("Rows dropped:", 0)   
+print("Rows dropped:", 0)
 print("Using price median:", pm)
 print("Using rating median:", rm)
 print("Clean rows saved:", len(rows))
-print("Saved cleaned book data to books_dataset.csv")
+print(f"Saved cleaned book data to {SCRIPT_DIR / 'books_dataset.csv'}")
 
-#TASK-4 : sqlite schema creation
+# TASK-4 : sqlite schema creation
 
 print("\nStarting Database...")
-conn = sqlite3.connect("books.db")
+conn = sqlite3.connect(SCRIPT_DIR / "books.db")
 cur = conn.cursor()
 cur.executescript("""
 DROP TABLE IF EXISTS books;
@@ -161,10 +171,10 @@ for name, q in queries.items():
         print(r)
     print(f"({len(data)} rows)\n")
 
-with open("query_results.json", "w", encoding="utf-8") as f:
+with open(SCRIPT_DIR / "query_results.json", "w", encoding="utf-8") as f:
     json.dump(results, f, indent=2, default=str)
 
-print("Saved all query strings and outputs to query_results.json")
+print(f"Saved all query strings and outputs to {SCRIPT_DIR / 'query_results.json'}")
 
 #TASK-6 : Read two query results into DataFrames
 #TASK-6
@@ -190,6 +200,10 @@ ORDER BY c.category_name,b.title
 LIMIT 5;
 """, conn)
 
-print("\nSQL JOIN and pd.merge() produce the same output:",merge_df.equals(sql_df))
+print("\nSQL JOIN Output")
+print(sql_df)
+print("\npd.merge Output")
+print(merge_df)
+print("\nMatch:", sql_df.equals(merge_df))
 conn.close()
 print("Database connection closed.")
