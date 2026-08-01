@@ -1,4 +1,4 @@
-﻿#  MASAI Capstone Project
+﻿# Zepto Data & AI Platform
 # Module-1 : Data Extraction, Data Cleaning, Storing results
 
 This module scrapes book data from `https://books.toscrape.com` for the following categories:
