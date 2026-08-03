@@ -1,4 +1,4 @@
-﻿# Zepto Data & AI Platform
+﻿# Zepto Data & AI platfrom
 # Module-1 : Data Extraction, Data Cleaning, Storing results
 
 This module scrapes book data from `https://books.toscrape.com` for the following categories:
@@ -23,6 +23,10 @@ The scraping module is located at `data_pipeline/data_end-to-end.py`.
 - `requests`
 - `beautifulsoup4`
 - `pandas`
+- `numpy`
+- `matplotlib`
+- `seaborn`
+- `scikit-learn`
 - `csv`, `json`, `re`, `statistics`, `sqlite3`, `urllib.parse` (Python standard library)
 
 ## Installation
