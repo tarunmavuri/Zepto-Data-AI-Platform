@@ -1,19 +1,20 @@
-# Zepto Data & AI Platform
+﻿# Zepto Data & AI Platform
 
 A multi-module project for web data extraction, cleaning, storage, and analytics.
 
 ## Project Modules
 
 ### 1. Book Scraping and Data Pipeline
-- Location: `data_pipeline/data_end-to-end.py`
-- Scrapes book data from `https://books.toscrape.com`
-- Categories included: Travel, Mystery, Classics
-- Cleans extracted data and stores results as CSV, SQLite, and JSON
+- Entry point: `books.py`
+- Pipeline script: `data_pipeline/data_end-to-end.py`
+- Scrapes book listings from `https://books.toscrape.com`
+- Includes categories: Travel, Mystery, Classics
+- Cleans and enriches the data, then saves it to CSV, SQLite, and JSON
 
 ### 2. Titanic Analytics
-- Location: `analytics/01_eda.py`
+- Entry point: `analytics/01_eda.py`
 - Loads the local Titanic dataset from `analytics/titanic.csv`
-- Prints dataset shape, info, summary statistics, and missing-value percentages
+- Computes dataset shape, info, summary statistics, and missing-value percentages
 - Applies basic cleaning for `age`, `embarked`, `embark_town`, and `deck`
 - See `analytics/README.md` for module-specific details
 
@@ -33,7 +34,7 @@ pip install -r requirements.txt
 python books.py
 ```
 
-This executes `data_pipeline/data-end-to-end.py` and writes output to:
+This executes `data_pipeline/data_end-to-end.py` and writes output to:
 - `data_pipeline/books_dataset.csv`
 - `data_pipeline/books.db`
 - `data_pipeline/query_results.json`
@@ -43,6 +44,13 @@ This executes `data_pipeline/data-end-to-end.py` and writes output to:
 ```bash
 python analytics/01_eda.py
 ```
+
+## Output Files
+
+- `data_pipeline/books_dataset.csv` — cleaned book dataset
+- `data_pipeline/books.db` — SQLite database of categories and books
+- `data_pipeline/query_results.json` — saved SQL query output
+- `analytics/titanic_cleaned.csv` — cleaned Titanic dataset (generated if the script writes it)
 
 ## Requirements
 
@@ -55,16 +63,14 @@ The project depends on:
 - `matplotlib`
 - `seaborn`
 - `scikit-learn`
-- Python standard library modules: `csv`, `json`, `re`, `statistics`, `sqlite3`, `urllib.parse`
 
 ## Notes
 
-- The book pipeline imputes missing prices and ratings with median values.
-- Prices are converted from GBP to INR for the book dataset.
-- The analytics module uses a local Titanic dataset stored in `analytics/titanic.csv`.
-- Dependencies are pinned in `requirements.txt` for reproducibility.
+- The book pipeline imputes missing price and rating values using medians.
+- The book dataset price values are converted from GBP to INR.
+- The analytics module is self-contained and uses the local Titanic dataset in `analytics/titanic.csv`.
 
 ## Documentation
 
-- `data_pipeline/README.md` � Book scraping and pipeline module
-- `analytics/README.md` � Titanic analytics module
+- `data_pipeline/README.md` — Book scraping and pipeline module
+- `analytics/README.md` — Titanic analytics module
