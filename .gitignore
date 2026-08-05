@@ -1,0 +1,24 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.sqlite3
+*.db
+*.db3
+
+# Virtual environments
+.venv/
+venv/
+
+# Data and output files
+*.csv
+*.json
+*.png
+*.svg
+*.pdf
+
+# IDE/workspace files
+.vscode/
+.idea/

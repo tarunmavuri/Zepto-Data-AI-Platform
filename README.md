@@ -13,9 +13,11 @@ A multi-module project for web data extraction, cleaning, storage, and analytics
 
 ### 2. Titanic Analytics
 - Entry point: `analytics/01_eda.py`
+- Modeling script: `analytics/02.modeling.py`
 - Loads the local Titanic dataset from `analytics/titanic.csv`
 - Computes dataset shape, info, summary statistics, and missing-value percentages
 - Applies basic cleaning for `age`, `embarked`, `embark_town`, and `deck`
+- Builds and compares classification models, handles imbalance with SMOTE, and evaluates a fare regression model
 - See `analytics/README.md` for module-specific details
 
 ## Installation
@@ -45,12 +47,19 @@ This executes `data_pipeline/data_end-to-end.py` and writes output to:
 python analytics/01_eda.py
 ```
 
+### Titanic modeling module
+
+```bash
+python analytics/02.modeling.py
+```
+
 ## Output Files
 
 - `data_pipeline/books_dataset.csv` — cleaned book dataset
 - `data_pipeline/books.db` — SQLite database of categories and books
 - `data_pipeline/query_results.json` — saved SQL query output
 - `analytics/titanic_cleaned.csv` — cleaned Titanic dataset (generated if the script writes it)
+- `best_titanic_pipeline.pkl` — saved Titanic model pipeline from `analytics/02.modeling.py`
 
 ## Requirements
 
@@ -63,6 +72,8 @@ The project depends on:
 - `matplotlib`
 - `seaborn`
 - `scikit-learn`
+- `imbalanced-learn`
+- `joblib`
 
 ## Notes
 
