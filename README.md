@@ -1,77 +1,144 @@
 ﻿# Zepto Data & AI Platform
 
-AI/ML platform with web scraping, data analytics, and RAG-based support chatbot.
+A full-stack data and AI learning project combining web scraping, analytics, and a retrieval-augmented support assistant.
 
-## 📋 Modules
+## Overview
 
-| Module | Purpose | Command |
-|--------|---------|---------|
-| **Data Pipeline** 📊 | Web scraping & ETL | `python data_pipeline/data_end-to-end.py` |
-| **Analytics** 📈 | Titanic ML analysis | `python analytics/01_eda.py` / `02.modeling.py` |
-| **Support Assistant** 🤖 | RAG chatbot | `uvicorn support_assistant/main:app --reload` |
+This repository contains three main modules:
 
-## 🚀 Quick Start
+- Data Pipeline: extracts and transforms book dataset information from a public web source.
+- Analytics: explores and models the Titanic survival dataset using machine learning pipelines.
+- Support Assistant: stores policy documents in ChromaDB and answers questions using a semantic retrieval workflow.
+
+## Project Structure
+
+```text
+Zepto Data & AI Platform/
+├── README.md
+├── requirements.txt
+├── analytics/
+│   ├── 01_eda.py
+│   ├── 02.modeling.py
+│   ├── README.md
+│   ├── titanic.csv
+│   └── titanic_cleaned.csv
+├── data_pipeline/
+│   ├── books_dataset.csv
+│   ├── books.py
+│   ├── data_end-to-end.py
+│   ├── query_results.json
+│   └── README.md
+└── support_assistant/
+    ├── Dockerfile
+    ├── README.md
+    ├── requirements.txt
+    ├── ingest.py
+    ├── main.py
+    ├── rag.py
+    ├── chroma_db/
+    └── docs/
+```
+
+## Module Summary
+
+| Module | Purpose | Typical Run |
+| --- | --- | --- |
+| Data Pipeline | Scrape, clean, transform, and store book data | `python data_pipeline/data_end-to-end.py` |
+| Analytics | EDA and ML modeling on Titanic data | `python analytics/01_eda.py` and `python analytics/02.modeling.py` |
+| Support Assistant | RAG-powered chatbot with vector search | `cd support_assistant && uvicorn main:app --reload` |
+
+## Quick Start
+
+### 1. Create and activate a virtual environment
 
 ```bash
-# Install root dependencies
+python -m venv .venv
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+# macOS/Linux
+source .venv/bin/activate
+```
+
+### 2. Install root dependencies
+
+```bash
 pip install -r requirements.txt
-
-# Install support assistant dependencies
-cd support_assistant && pip install -r requirements.txt
-
-# Run modules
-python data_pipeline/data_end-to-end.py       # Scrapes books, outputs CSV + JSON
-python analytics/01_eda.py                    # EDA + cleaning
-python analytics/02.modeling.py               # Model training
-python support_assistant/ingest.py            # Ingest policies to ChromaDB
-uvicorn support_assistant/main:app --reload   # Start API at http://localhost:8000/docs
 ```
 
-## 📁 Project Structure
+### 3. Install support assistant dependencies
 
-```
-├── requirements.txt
-├── analytics/                    # Titanic dataset: 01_eda.py, 02.modeling.py
-├── data_pipeline/               # Book scraping: data_end-to-end.py
-└── support_assistant/           # RAG chatbot: main.py, rag.py, ingest.py
-    ├── chroma_db/              # Vector database
-    ├── docs/                   # Policy documents
-    └── requirements.txt
+```bash
+cd support_assistant
+pip install -r requirements.txt
+cd ..
 ```
 
-## 📦 Dependencies
+### 4. Run each module
 
-**Root:** `requests`, `beautifulsoup4`, `pandas`, `numpy`, `scikit-learn`, `matplotlib`, `seaborn`  
-**Support Assistant:** `fastapi`, `uvicorn`, `chromadb`, `sentence-transformers`, `langgraph`, `pydantic`
+```bash
+# Data pipeline
+python data_pipeline/data_end-to-end.py
 
-## 📤 Output Files
+# Analytics
+python analytics/01_eda.py
+python analytics/02.modeling.py
 
-- `data_pipeline/books_dataset.csv` — Cleaned books
-- `data_pipeline/query_results.json` — SQL query results
-- `analytics/titanic_cleaned.csv` — Cleaned Titanic data
-- `best_titanic_pipeline.pkl` — Trained model
-- `support_assistant/chroma_db/` — Vector embeddings
+# Support assistant ingestion
+cd support_assistant
+python ingest.py
 
-## 💡 Key Notes
+# Start API
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
 
-- **Data Pipeline:** Converts GBP→INR, fills missing values with medians
-- **Analytics:** Uses SMOTE for imbalance, scikit-learn pipelines, cross-validation
-- **Support Assistant:** Uses `all-MiniLM-L6-v2` embeddings, run `ingest.py` before API
-- **Docker:** `docker build -t zepto-support-assistant support_assistant/` → `docker run -p 8000:8000 zepto-support-assistant`
+## Docker
 
-## 📖 Documentation
+```bash
+cd support_assistant
+docker build -t zepto-support-assistant .
+docker run -p 8000:8000 zepto-support-assistant
+```
 
-- [Data Pipeline](data_pipeline/README.md) — ETL workflow, database schema
-- [Analytics](analytics/README.md) — EDA, modeling details
-- [Support Assistant](support_assistant/README.md) — API, RAG architecture
+The API is available at:
 
-## 🤝 Contributing
+- Swagger docs: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
 
-1. Keep modules independent
-2. Update module READMEs
-3. Follow existing code style
-4. Test thoroughly
+## Dependencies
+
+### Root requirements
+
+- `requests`
+- `beautifulsoup4`
+- `pandas`
+- `numpy`
+- `matplotlib`
+- `seaborn`
+- `scikit-learn`
+- `imbalanced-learn`
+- `joblib`
+
+### Support assistant requirements
+
+- `fastapi`
+- `uvicorn`
+- `pydantic`
+- `chromadb`
+- `sentence-transformers`
+- `langgraph`
+
+## Documentation
+
+- [Analytics README](analytics/README.md)
+- [Data Pipeline README](data_pipeline/README.md)
+- [Support Assistant README](support_assistant/README.md)
+
+## Notes
+
+- The support assistant uses the `all-MiniLM-L6-v2` embedding model and requires `python ingest.py` before querying the API.
+- The analytics module uses a cleaned Titanic dataset and applies modeling workflows such as classification and regression.
+- The data pipeline generates CSV and JSON outputs that can be reused for downstream analysis.
 
 ---
 
-**Last Updated:** 2026-08-14 | **Python:** 3.8+ | **Status:** Active
+

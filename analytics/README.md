@@ -1,98 +1,73 @@
-# Analytics Module 📊
+# Analytics Module
 
 ## Overview
 
-This module performs comprehensive data analysis and machine learning on the Titanic dataset. It includes exploratory data analysis (EDA), data cleaning, feature engineering, and building predictive models for passenger survival classification and fare prediction.
+This module focuses on exploratory data analysis and predictive modeling using the Titanic dataset. It demonstrates how raw tabular data can be cleaned, transformed, and used for both classification and regression tasks.
 
-## Files
+## Included Files
 
-| File | Purpose |
-|------|----------|
-| `01_eda.py` | Exploratory Data Analysis and data cleaning |
-| `02.modeling.py` | Classification and regression model building |
-| `titanic.csv` | Original Titanic dataset (reference copy) |
-| `titanic_cleaned.csv` | Cleaned dataset output (generated) |
-| `README.md` | Module documentation |
+- `01_eda.py` — data inspection, cleaning, and output generation
+- `02.modeling.py` — survival classification and fare regression modeling
+- `titanic.csv` — original Titanic dataset
+- `titanic_cleaned.csv` — cleaned output dataset
+- `README.md` — module documentation
 
-## What This Module Does
+## Workflow
 
-### 1. Exploratory Data Analysis (`01_eda.py`)
+### 1. EDA and Cleaning
 
-- **Data Loading**: Loads the Titanic dataset from seaborn
-- **Dataset Overview**: Prints shape, data types, and statistical summaries
-- **Missing Value Analysis**: Calculates missing value percentages for each column
-- **Data Cleaning**:
-  - Handles missing values for `age`, `embarked`, `embark_town`, and `deck`
-  - Uses appropriate imputation strategies (median for age, mode for categorical)
-  - Exports cleaned data to `titanic_cleaned.csv`
-- **Offline Storage**: Creates a local CSV copy for reproducible analysis
+`01_eda.py` is responsible for:
 
-### 2. Modeling and Predictions (`02.modeling.py`)
+- loading the Titanic dataset
+- checking shape, dtypes, and summary statistics
+- identifying missing values
+- imputing missing values for critical columns
+- exporting a cleaned dataset to `titanic_cleaned.csv`
 
-- **Classification Task**: Predicts passenger survival (binary classification)
-  - Handles class imbalance using SMOTE (Synthetic Minority Over-sampling Technique)
-  - Compares multiple models: Logistic Regression, Random Forest, Gradient Boosting
-  - Evaluates using accuracy, precision, recall, F1-score
-  - Persists best model as pipeline for reuse
+### 2. Modeling
 
-- **Regression Task**: Predicts fare amounts
-  - Builds regression pipelines with feature scaling
-  - Evaluates using MSE, RMSE, R² metrics
-  - Compares multiple regression algorithms
+`02.modeling.py` covers:
 
-## How to Run
+- survival prediction using classification models
+- fare prediction using regression models
+- class imbalance handling with SMOTE
+- model performance comparison and evaluation
+- saving the best-performing model pipeline
 
-### Run EDA and Data Cleaning
+## Run
+
+From the project root:
+
 ```bash
 python analytics/01_eda.py
-```
-This will:
-- Load and analyze the Titanic dataset
-- Print comprehensive statistics and missing value analysis
-- Generate `titanic_cleaned.csv`
-
-### Run Modeling
-```bash
 python analytics/02.modeling.py
 ```
-This will:
-- Train classification models for survival prediction
-- Train regression models for fare prediction
-- Compare model performance
-- Save trained pipelines for later use
-
-## Dataset Description
-
-The Titanic dataset includes passenger information such as:
-- **Demographic**: Age, Sex, Class
-- **Family**: SibSp (siblings/spouses), Parch (parents/children)
-- **Fare**: Ticket price
-- **Embarked**: Port of embarkation (C=Cherbourg, Q=Queenstown, S=Southampton)
-- **Target**: Survived (0=No, 1=Yes)
 
 ## Dependencies
 
-Requires packages from the root `requirements.txt`:
+This module uses packages defined in the project root requirements, especially:
+
 - pandas
 - numpy
 - scikit-learn
 - matplotlib
 - seaborn
+- imbalanced-learn
+- joblib
 
-Install from project root:
+Install them with:
+
 ```bash
 pip install -r requirements.txt
 ```
 
-## Output Files
+## Outputs
 
-- `titanic_cleaned.csv` - Cleaned dataset ready for further analysis
-- Trained model pipelines - Saved during model training for reuse
+- `analytics/titanic_cleaned.csv` — cleaned dataset for repeatable use
+- trained model artifacts created during model execution
 
-## Technical Notes
+## Notes
 
-- The module uses scikit-learn pipelines for reproducibility and ease of deployment
-- SMOTE is applied only to training data to avoid data leakage
-- All numerical features are standardized using StandardScaler
-- Models are evaluated using cross-validation for robust performance estimates
-- The analytics module is self-contained and doesn't depend on other project modules
+- The analytics workflow is intentionally standalone and does not depend on the support assistant module.
+- StandardScaler and pipeline-based model design are used to keep the workflow reproducible and clean.
+- The dataset is useful for showing typical classification and feature-engineering steps in an ML project.

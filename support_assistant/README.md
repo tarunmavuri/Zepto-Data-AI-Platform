@@ -1,261 +1,98 @@
-# Zepto Support Assistant 🤖
+# Zepto Support Assistant
 
-An intelligent Retrieval-Augmented Generation (RAG) based customer support chatbot for Zepto, built with FastAPI, ChromaDB, and LangGraph.
+A lightweight retrieval-augmented support assistant built with FastAPI, ChromaDB, sentence-transformers, and LangGraph.
 
 ## Overview
 
-The Zepto Support Assistant is an AI-powered customer support system that:
-- Ingests policy documents and stores them as semantic embeddings in ChromaDB
-- Classifies user queries by intent (policy questions vs general inquiries)
-- Retrieves relevant policy documents using semantic similarity search
-- Generates accurate, context-grounded answers based on company policies
-- Provides confidence scores and source attribution for transparency
+This module ingests policy documents from the `docs/` folder, converts them into vector embeddings, stores them in ChromaDB, and exposes a simple API for asking questions based on those documents.
 
-## Architecture
+## Files
 
-### System Components
+- `main.py` — FastAPI application and API routes
+- `rag.py` — LangGraph-based retrieval workflow
+- `ingest.py` — document ingestion and embedding generation
+- `Dockerfile` — container build for deployment
+- `requirements.txt` — Python dependencies
+- `docs/` — policy source documents
+- `chroma_db/` — local vector database
 
-#### 1. Document Ingestion (`ingest.py`)
+## Local Setup
 
-**Responsibility**: Load and embed policy documents
+From the project root:
 
-- Reads policy documents from `docs/` directory
-- Uses `all-MiniLM-L6-v2` transformer model for embedding generation
-- Creates semantic embeddings (384-dimensional vectors)
-- Stores embeddings in ChromaDB with metadata (source, content)
-- Supports incremental ingestion of new documents
-
-#### 2. RAG Pipeline (`rag.py`)
-
-**Responsibility**: Orchestrate the retrieval-augmented generation workflow
-
-The pipeline consists of three nodes:
-
-- **Intent Classification Node**
-  - Categorizes user queries (policy question, general question, complaint, etc.)
-  - Routes queries appropriately based on intent
-  - Improves response relevance
-
-- **Retrieval Node**
-  - Searches ChromaDB for semantically relevant policy documents
-  - Ranks results by relevance score
-  - Returns top-k documents with similarity scores
-  - Includes source metadata for attribution
-
-- **Answer Generation Node**
-  - Combines retrieved policy context with user query
-  - Generates human-readable answers grounded in company policies
-  - Provides confidence scores based on retrieval relevance
-  - Cites sources for transparency
-
-**Orchestration**: Uses LangGraph for robust workflow management
-
-#### 3. API Server (`main.py`)
-
-**Responsibility**: Expose RAG system via REST API
-
-- FastAPI application with automatic API documentation
-- Pydantic models for type-safe request/response handling
-- Single main endpoint: `POST /ask`
-- Interactive API docs available at `/docs` and `/redoc`
-
-### Data Flow
-
-```
-User Query
-    ↓
-[Intent Classification] → Categorize intent
-    ↓
-[Semantic Retrieval] → Search ChromaDB for relevant policies
-    ↓
-[Answer Generation] → Generate context-grounded response
-    ↓
-Structured Response (answer, sources, confidence)
-```
-
-## Setup & Installation
-
-### Prerequisites
-
-- Python 3.8 or higher
-- pip or conda package manager
-- 2GB+ disk space for vector database and models
-
-### Installation Steps
-
-1. Navigate to the support_assistant directory:
 ```bash
 cd support_assistant
-```
-
-2. Create a virtual environment (recommended):
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
+python -m venv .venv
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+# macOS/Linux
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Running the Service
+## Ingest Documents
 
-### Start the API Server
-
-```bash
-uvicorn main:app --reload
-```
-
-The server will start on `http://localhost:8000`
-
-### Access the API
-
-**Interactive API Documentation**:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
-
-**Health Check**:
-```bash
-curl http://localhost:8000/
-```
-
-Response: `{"message": "Zepto Support Assistant API is running"}`
-
-### Making Queries
-
-**Using cURL**:
-```bash
-curl -X POST "http://localhost:8000/ask" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "What is your return policy?"}'
-```
-
-**Using Python**:
-```python
-import requests
-
-response = requests.post(
-    "http://localhost:8000/ask",
-    json={"query": "What is your return policy?"}
-)
-print(response.json())
-```
-
-**Response Format**:
-```json
-{
-  "answer": "Based on our return policy...",
-  "sources": ["policy_doc_1.txt", "policy_doc_2.txt"],
-  "confidence": 0.92
-}
-```
-
-## API Endpoints
-
-### GET `/`
-Health check endpoint
-
-**Response**:
-```json
-{"message": "Zepto Support Assistant API is running"}
-```
-
-### POST `/ask`
-Query the support assistant
-
-**Request**:
-```json
-{
-  "query": "What is your delivery time?"
-}
-```
-
-**Response**:
-```json
-{
-  "answer": "Our delivery time is typically 30 minutes...",
-  "sources": ["delivery_policy.txt"],
-  "confidence": 0.87
-}
-```
-
-## File Structure
-
-```
-support_assistant/
-├── main.py                 # FastAPI server
-├── rag.py                  # RAG pipeline with LangGraph
-├── ingest.py              # Document ingestion script
-├── requirements.txt        # Python dependencies
-├── Dockerfile             # Docker container configuration
-├── README.md              # This file
-├── chroma_db/             # ChromaDB vector store
-│   ├── chroma.sqlite3     # Vector database
-│   └── [collection_dirs]/ # Embedded documents
-└── docs/                  # Policy documents
-    ├── doc_1.txt
-    ├── doc_2.txt
-    ├── doc_3.txt
-    ├── doc_4.txt
-    ├── doc_5.txt
-    ├── doc_6.txt
-    ├── doc_7.txt
-    └── doc_8.txt
-```
-
-## Document Management
-
-### Adding New Policy Documents
-
-1. Place policy documents in the `docs/` folder (supports `.txt` format)
-2. Run the ingestion script:
 ```bash
 python ingest.py
 ```
-3. The system will:
-   - Read all documents
-   - Generate embeddings
-   - Update ChromaDB
-   - Make documents available for retrieval
 
-### Supported Document Formats
-- Plain text (`.txt`)
-- Can be extended to support PDF, Markdown, etc.
+This loads all `.txt` files in the `docs/` folder and stores embeddings in the local ChromaDB collection.
 
-## Dependencies
+## Start the API
 
-Key packages (see `requirements.txt` for complete list):
-
-- **fastapi**: Web framework for API
-- **uvicorn**: ASGI server
-- **langgraph**: Workflow orchestration
-- **chromadb**: Vector database
-- **sentence-transformers**: Embedding generation
-- **pydantic**: Data validation
-- **requests**: HTTP client
-- **beautifulsoup4**: HTML parsing (if needed)
-
-Install all dependencies:
 ```bash
-pip install -r requirements.txt
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-## Docker Deployment
+Then open:
 
-### Build Docker Image
+- `http://localhost:8000/docs`
+- `http://localhost:8000/redoc`
+
+## Example Request
+
+```bash
+curl -X POST "http://localhost:8000/ask" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"What is the return policy?"}'
+```
+
+Response shape:
+
+```json
+{
+  "answer": "Based on the retrieved context...",
+  "sources": ["doc_1.txt"],
+  "confidence": 1.0
+}
+```
+
+## Docker
 
 ```bash
 docker build -t zepto-support-assistant .
-```
-
-### Run Docker Container
-
-```bash
 docker run -p 8000:8000 zepto-support-assistant
 ```
 
-The API will be available at `http://localhost:8000`
+## Dependencies
+
+The module requires the following packages:
+
+- fastapi
+- uvicorn
+- pydantic
+- chromadb
+- sentence-transformers
+- langgraph
+
+These are pinned in `support_assistant/requirements.txt`.
+
+## Notes
+
+- The embedding model currently used is `all-MiniLM-L6-v2`.
+- The assistant is designed for policy-based Q&A, not for general-purpose open-ended conversation.
+- The app expects the Chroma collection to exist before queries are made; this is created automatically by `ingest.py`.
+- The API route is `POST /ask` and accepts a JSON body with a `query` field.
 
 ## Configuration
 

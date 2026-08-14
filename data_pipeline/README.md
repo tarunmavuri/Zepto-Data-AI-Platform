@@ -1,156 +1,75 @@
-# Data Pipeline Module 📚
+# Data Pipeline Module
 
 ## Overview
 
-This module implements a complete ETL (Extract, Transform, Load) pipeline that scrapes book data from a public website, cleans and enriches it, and persists it to multiple storage formats (CSV and SQLite). It demonstrates data extraction, transformation, and analytical query execution.
+This module scrapes book information from a public website, cleans the extracted dataset, and stores the output locally for further analysis. It demonstrates a simplified ETL workflow using Python and common data-science libraries.
 
 ## Files
 
-| File | Purpose |
-|------|----------|
-| `data_end-to-end.py` | Main ETL pipeline script |
-| `books_dataset.csv` | Cleaned book data output |
-| `query_results.json` | SQL query results and analysis |
-| `README.md` | Module documentation |
+- `data_end-to-end.py` — full scraping and transformation pipeline
+- `books.py` — supporting book-related processing logic
+- `books_dataset.csv` — exported cleaned dataset
+- `query_results.json` — saved analysis output
+- `README.md` — module documentation
 
-## Pipeline Workflow
+## Pipeline Flow
 
-### Phase 1: Web Scraping (Extract)
+### 1. Extraction
 
-- **Target**: `https://books.toscrape.com`
-- **Categories**: Travel, Mystery, Classics
-- **Data Extracted**:
-  - Book title
-  - Price (GBP)
-  - Rating (1-5 stars)
-  - Stock availability
-  - Category
-- **Pagination**: Handles multi-page categories automatically
+The pipeline fetches book data from the Books to Scrape website and collects fields such as:
 
-### Phase 2: Data Cleaning (Transform)
+- title
+- category
+- price
+- rating
+- stock availability
 
-- **Missing Value Handling**:
-  - Calculates category-wise median prices and ratings
-  - Fills missing prices with category median
-  - Fills missing ratings with category median
-  
-- **Data Enrichment**:
-  - Converts prices from GBP to INR (using 1 GBP = 105.50 INR)
-  - Normalizes stock availability to binary (0/1)
-  - Normalizes ratings to integer scale (1-5)
+### 2. Transformation
 
-- **Data Quality**:
-  - Validates scraped data before processing
-  - Handles malformed entries gracefully
-  - Ensures consistency across records
+During transformation, the script:
 
-### Phase 3: Data Loading (Load)
+- normalizes scraped values
+- handles missing or malformed fields
+- converts currency values from GBP to INR
+- cleans inconsistent data into a usable tabular structure
 
-- **CSV Export**: Saves cleaned data to `books_dataset.csv`
-- **SQLite Database**:
-  - Creates normalized database schema
-  - `categories` table: Stores category information
-  - `books` table: Stores book details with foreign key to categories
-  - Supports efficient querying and analysis
+### 3. Loading
 
-### Phase 4: Analysis
+The transformed data is saved as:
 
-- **SQL Queries**: Executes analysis queries on the database
-- **Cross-Validation**: Compares SQL results with pandas merge operations
-- **Output**: Persists query results to `query_results.json`
+- CSV file in the `data_pipeline` folder
+- JSON output for query results and quick inspection
 
-## How to Run
+## Run
+
+From the project root:
 
 ```bash
 python data_pipeline/data_end-to-end.py
 ```
 
-This will:
-1. Scrape book data from the website
-2. Clean and transform the data
-3. Create SQLite database tables
-4. Load cleaned data into the database
-5. Execute analysis queries
-6. Generate output files:
-   - `books_dataset.csv` - Cleaned tabular data
-   - `query_results.json` - Query results and analysis
-
-## Data Schema
-
-### categories Table
-```sql
-CREATE TABLE categories (
-    category_id INTEGER PRIMARY KEY,
-    category_name TEXT NOT NULL UNIQUE
-);
-```
-
-### books Table
-```sql
-CREATE TABLE books (
-    book_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    price_inr REAL,
-    rating INTEGER,
-    stock INTEGER,
-    category_id INTEGER,
-    FOREIGN KEY (category_id) REFERENCES categories(category_id)
-);
-```
-
-## Features
-
-✅ **Automated Web Scraping** - Extracts data from dynamic website  
-✅ **Data Cleaning** - Handles missing values and inconsistencies  
-✅ **Currency Conversion** - Converts GBP to INR  
-✅ **Database Normalization** - Creates properly structured SQLite schema  
-✅ **Query Analysis** - Demonstrates SQL and pandas operations  
-✅ **Reproducibility** - All outputs are deterministic and logged  
-
 ## Dependencies
 
-Requires packages from root `requirements.txt`:
-- requests (HTTP requests)
-- beautifulsoup4 (HTML parsing)
-- pandas (Data manipulation)
-- sqlite3 (Built-in, database operations)
+The module depends on the root requirements, including:
 
-Install from project root:
+- requests
+- beautifulsoup4
+- pandas
+- numpy
+
+Install dependencies with:
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ## Output Files
 
-- **books_dataset.csv**: Cleaned book records in tabular format
-- **query_results.json**: JSON file containing:
-  - SQL queries executed
-  - Query results
-  - Cross-validation comparisons with pandas
+- `data_pipeline/books_dataset.csv` — final cleaned and structured dataset
+- `data_pipeline/query_results.json` — business/query results saved as JSON
 
-## Configuration
+## Notes
 
-### Categories to Scrape
-Modify the `CATS` dictionary in `data_end-to-end.py`:
-```python
-CATS = {
-    "Travel": "...",
-    "Mystery": "...",
-    "Classics": "..."
-}
-```
-
-### Currency Conversion Rate
-Modify the `RATE` variable:
-```python
-RATE = 105.50  # 1 GBP to INR
-```
-
-## Technical Notes
-
-- **Script-relative paths**: All output files are generated in the `data_pipeline/` directory
-- **Pagination handling**: Automatically follows "Next" links across pages
-- **Error handling**: Gracefully handles missing data and malformed HTML
-- **Data validation**: Ensures all records meet quality standards before loading
-- **Database isolation**: SQLite database is self-contained within the module
-- **Reproducibility**: Results are deterministic and can be regenerated anytime
+- The script is designed to be run from the repository root or from within the `data_pipeline` folder, as long as relative paths are preserved.
+- The conversion logic and cleaning steps are simple but effective examples of ETL automation and data preparation.
+- This module is independent from the model-training and chatbot modules in the project.
