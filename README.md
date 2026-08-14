@@ -1,136 +1,77 @@
 ﻿# Zepto Data & AI Platform
 
-A comprehensive AI/ML platform featuring web data extraction, analytics, and a RAG-based intelligent support assistant.
+AI/ML platform with web scraping, data analytics, and RAG-based support chatbot.
 
-## Project Modules
+## 📋 Modules
 
-### 1. Book Scraping and Data Pipeline
-- Entry point: `books.py`
-- Pipeline script: `data_pipeline/data_end-to-end.py`
-- Scrapes book listings from `https://books.toscrape.com`
-- Includes categories: Travel, Mystery, Classics
-- Cleans and enriches the data, then saves it to CSV, SQLite, and JSON
-- See `data_pipeline/README.md` for detailed documentation
+| Module | Purpose | Command |
+|--------|---------|---------|
+| **Data Pipeline** 📊 | Web scraping & ETL | `python data_pipeline/data_end-to-end.py` |
+| **Analytics** 📈 | Titanic ML analysis | `python analytics/01_eda.py` / `02.modeling.py` |
+| **Support Assistant** 🤖 | RAG chatbot | `uvicorn support_assistant/main:app --reload` |
 
-### 2. Titanic Analytics & Modeling
-- Entry point: `analytics/01_eda.py` (EDA) and `analytics/02.modeling.py` (Modeling)
-- Loads the local Titanic dataset from `analytics/titanic.csv`
-- Computes dataset shape, info, summary statistics, and missing-value percentages
-- Applies basic cleaning for `age`, `embarked`, `embark_town`, and `deck`
-- Builds and compares classification models, handles imbalance with SMOTE, and evaluates fare regression models
-- See `analytics/README.md` for module-specific details
-
-### 3. Zepto Support Assistant (RAG System)
-- RAG-based intelligent customer support system powered by FastAPI
-- Components:
-  - **Document Ingestion** (`ingest.py`): Loads policies, generates embeddings with `all-MiniLM-L6-v2`
-  - **RAG Pipeline** (`rag.py`): Intent classification, semantic retrieval, and answer generation using LangGraph
-  - **Vector Store**: ChromaDB for persistent embedding storage
-- Run server: `uvicorn main:app --reload` (from `support_assistant/` directory)
-- API endpoints for querying policies with confidence scores and source tracking
-- See `support_assistant/README.md` for setup and API details
-
-## Installation
-
-Install dependencies from the project root:
+## 🚀 Quick Start
 
 ```bash
+# Install root dependencies
 pip install -r requirements.txt
+
+# Install support assistant dependencies
+cd support_assistant && pip install -r requirements.txt
+
+# Run modules
+python data_pipeline/data_end-to-end.py       # Scrapes books, outputs CSV + JSON
+python analytics/01_eda.py                    # EDA + cleaning
+python analytics/02.modeling.py               # Model training
+python support_assistant/ingest.py            # Ingest policies to ChromaDB
+uvicorn support_assistant/main:app --reload   # Start API at http://localhost:8000/docs
 ```
 
-For support assistant dependencies (FastAPI, Uvicorn, etc.), install from the support_assistant directory:
+## 📁 Project Structure
 
-```bash
-cd support_assistant
-pip install -r requirements.txt
+```
+├── requirements.txt
+├── analytics/                    # Titanic dataset: 01_eda.py, 02.modeling.py
+├── data_pipeline/               # Book scraping: data_end-to-end.py
+└── support_assistant/           # RAG chatbot: main.py, rag.py, ingest.py
+    ├── chroma_db/              # Vector database
+    ├── docs/                   # Policy documents
+    └── requirements.txt
 ```
 
-## Run
+## 📦 Dependencies
 
-### Book scraping pipeline
+**Root:** `requests`, `beautifulsoup4`, `pandas`, `numpy`, `scikit-learn`, `matplotlib`, `seaborn`  
+**Support Assistant:** `fastapi`, `uvicorn`, `chromadb`, `sentence-transformers`, `langgraph`, `pydantic`
 
-```bash
-python books.py
-```
+## 📤 Output Files
 
-This executes `data_pipeline/data_end-to-end.py` and writes output to:
-- `data_pipeline/books_dataset.csv`
-- `data_pipeline/books.db`
-- `data_pipeline/query_results.json`
+- `data_pipeline/books_dataset.csv` — Cleaned books
+- `data_pipeline/query_results.json` — SQL query results
+- `analytics/titanic_cleaned.csv` — Cleaned Titanic data
+- `best_titanic_pipeline.pkl` — Trained model
+- `support_assistant/chroma_db/` — Vector embeddings
 
-### Titanic analytics module
+## 💡 Key Notes
 
-```bash
-python analytics/01_eda.py
-```
+- **Data Pipeline:** Converts GBP→INR, fills missing values with medians
+- **Analytics:** Uses SMOTE for imbalance, scikit-learn pipelines, cross-validation
+- **Support Assistant:** Uses `all-MiniLM-L6-v2` embeddings, run `ingest.py` before API
+- **Docker:** `docker build -t zepto-support-assistant support_assistant/` → `docker run -p 8000:8000 zepto-support-assistant`
 
-### Titanic modeling module
+## 📖 Documentation
 
-```bash
-python analytics/02.modeling.py
-```
+- [Data Pipeline](data_pipeline/README.md) — ETL workflow, database schema
+- [Analytics](analytics/README.md) — EDA, modeling details
+- [Support Assistant](support_assistant/README.md) — API, RAG architecture
 
-### Zepto Support Assistant
+## 🤝 Contributing
 
-1. Navigate to the support_assistant directory:
-```bash
-cd support_assistant
-```
+1. Keep modules independent
+2. Update module READMEs
+3. Follow existing code style
+4. Test thoroughly
 
-2. Ingest policy documents into ChromaDB:
-```bash
-python ingest.py
-```
+---
 
-3. Start the FastAPI server:
-```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-4. Access the API at `http://localhost:8000`
-   - Swagger UI: `http://localhost:8000/docs`
-   - ReDoc: `http://localhost:8000/redoc`
-
-## Output Files
-
-- `data_pipeline/books_dataset.csv` — cleaned book dataset
-- `data_pipeline/books.db` — SQLite database of categories and books
-- `data_pipeline/query_results.json` — saved SQL query output
-- `analytics/titanic_cleaned.csv` — cleaned Titanic dataset (generated if the script writes it)
-- `best_titanic_pipeline.pkl` — saved Titanic model pipeline from `analytics/02.modeling.py`
-- `support_assistant/chroma_db/` — ChromaDB vector database with policy embeddings
-- `support_assistant/chroma_db/chroma.sqlite3` — SQLite backend for ChromaDB
-
-## Requirements
-
-### Core Dependencies
-- `requests`
-- `beautifulsoup4`
-- `pandas`
-- `numpy`
-- `matplotlib`
-- `seaborn`
-- `scikit-learn`
-- `imbalanced-learn`
-- `joblib`
-
-### Support Assistant Dependencies
-- `fastapi>=0.104.0`
-- `uvicorn>=0.24.0`
-- `pydantic>=2.0.0`
-- `chromadb>=0.4.0`
-- `sentence-transformers>=2.2.0`
-- `langgraph>=0.0.1`
-
-## Notes
-
-- **Data Pipeline**: The book pipeline imputes missing price and rating values using medians. Book dataset price values are converted from GBP to INR.
-- **Analytics Module**: The Titanic analytics module is self-contained and uses the local Titanic dataset in `analytics/titanic.csv`.
-- **Support Assistant**: The RAG system uses ChromaDB for persistent vector storage and `all-MiniLM-L6-v2` for semantic embeddings. Make sure to run `ingest.py` before starting the API server to populate the vector database with policy documents.
-- **Performance**: For optimal performance with the support assistant, consider using GPU acceleration for embedding generation with large document sets.
-
-## Documentation
-
-- `data_pipeline/README.md` — Book scraping and pipeline module
-- `analytics/README.md` — Titanic analytics module
-- `support_assistant/README.md` — RAG-based support assistant system with API documentation
+**Last Updated:** 2026-08-14 | **Python:** 3.8+ | **Status:** Active

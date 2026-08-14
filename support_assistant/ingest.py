@@ -1,5 +1,4 @@
 #DOCUMENT INGESTION + EMBEDDINGS + CHROMADB
-
 import os
 import chromadb
 from sentence_transformers import SentenceTransformer
