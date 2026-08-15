@@ -9,7 +9,6 @@ DOCS_FOLDER = os.path.join(BASE_DIR, "docs")
 DB_FOLDER = os.path.join(BASE_DIR, "chroma_db")
 
 COLLECTION_NAME = "zepto_policies"
-MODEL_NAME = "all-MiniLM-L6-v2"
 # Required embedding model from the assignment
 MODEL_NAME = "all-MiniLM-L6-v2"
 
